@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <!-- <link rel="stylesheet" href="./box.css"> -->
+</head>
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+    }
+    :root {
+        --bg-color: #123123;
+        --base-size: 100;
+}
+.box {
+    width: calc(var(--base-size) * 10px);
+    height: cal(var(--base-size) * 5px);
+    background-color: var(--bg-color);
+    padding: calc(var(--base-size) * 1px);
+}
+/* 手机浏览时，box宽高 padding大小等比缩放80%，使用变量操作 */
+</style>
+<body>
+    <div class="box"></div>
+    <script>
+        if(/Android|webOS|iPhone|iPod|BlackBerry/i.test(navigator.userAgent)) {
+            document.documentElement.style.setProperty(`--base-size`, '20')
+        }else {
+            document.documentElement.style.setProperty(`--base-size`, '100')
+        }
+    </script>
+</body>
+</html>
