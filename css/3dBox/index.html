@@ -15,8 +15,9 @@
             perspective: 1000px;
             height: 500px;
             width: 500px;
-            background-color: rgb(88, 96, 209);
-            perspective-origin: 0% 0%;
+            transform:rotate3d(0.2,1,0,-60deg);
+            transform-style: preserve-3d;
+            
         }
         .behindleft {
             position: absolute;
@@ -70,7 +71,7 @@
             height: 50px;
             background-color: #ad111a;
             border: 1px solid #fff;
-            transform: rotateY(90deg) rotateZ(0deg);
+            transform: translateZ(-100px) rotatex(45deg) ;
             transform-origin: bottom left 0;
         }
         .topright {
@@ -81,20 +82,20 @@
             height: 50px;
             background-color: #ad111a;
             border: 1px solid #fff;
-            transform: rotateY(-90deg) rotateZ(0deg);
+            transform: rotateX(-45deg);
             transform-origin: bottom right 0;
         }
     </style>
 <body>
-    <div class="box-container">
-        
-        
-        <div class="behindright">b-right</div>
-        <div class="behindleft">b-left</div>
-        <div class="frontright">f-right</div>
-        <div class="frontleft">f-left</div>
-        <div class="topleft">t-left</div>
-        <div class="topright">t-right</div>
+    <div class="wrapper">
+        <div class="box-container">
+            <div class="behindright">b-right</div>
+            <div class="behindleft">b-left</div>
+            <div class="frontright">f-right</div>
+            <div class="frontleft">f-left</div>
+            <div class="topleft">t-left</div>
+            <div class="topright">t-right</div>
+        </div>
     </div>
 </body>
 </html>
