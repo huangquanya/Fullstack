@@ -7,6 +7,7 @@ class Jzhang extends Component {
         this.handleClick=this.handleClick.bind(this)
     }
     render() { 
+        console.log('child-render')
         return ( 
             // <li 
             //           key={item+index}
@@ -23,6 +24,19 @@ class Jzhang extends Component {
     handleClick() {
         this.props.deletItem(this.props.index)
     }
+    shouldComponentUpdate(nextProps, nextState){
+        if(nextProps.content !== this.props.content){
+            return true;
+        }
+        return false;
+    }
+    // static getDerivedStateFromProps(props, state) {
+    //     console.log('2.getDerivedStateFromProps')
+    // }
+    // getSnapshotBeforeUpdate(prevProps, prevState) {
+    //     console.log('5.getSnapshotBeforeUpdate')
+
+    // }
 }
 
 Jzhang.propTypes={
