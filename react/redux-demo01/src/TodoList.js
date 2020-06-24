@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
-import 'antd/dist/antd.css'
-import { Input, Button, List } from 'antd'
+import axios from 'axios'
 import store from './store/index'
+import { chageInputAction, addLIstAction, deleteListAction, getListAction } from './store/actionCreators'
+import TodoListUI from './TodoListUI'
 
 
 class TodoList extends Component {
@@ -9,54 +10,47 @@ class TodoList extends Component {
         super(props)
         // console.log(store.getState())
         this.state = store.getState()
-        this.changeInputValue=this.changeInputValue.bind(this)
         this.storeChange = this.storeChange.bind(this)
+        this.changeInputValue=this.changeInputValue.bind(this)
         this.changeListValue=this.changeListValue.bind(this)
+        this.deleteListValue=this.deleteListValue.bind(this)
+        this.getList=this.getList.bind(this)
         store.subscribe(this.storeChange)
     }
     render() { 
         return ( 
-            <div style={{margin:'10px'}}>
-                <div>
-                    <Input 
-                        placeholder={this.state.inputValue} 
-                        style={{width:'500px'}} 
-                        onChange={this.changeInputValue}
-                        value={this.state.innerValue}
-                        />
-                    <Button 
-                        type='primary' 
-                        onClick={this.changeListValue}
-                        >
-                            添加
-                        </Button>
-                    <div style={{width:'300px'}}>
-                        <List
-                            bordered
-                            dataSource={this.state.list}
-                            renderItem={item=>(
-                            <List.Item>
-                                {item}
-                            </List.Item>)}
-                        
-                        />
-                    </div>
-                    
-                </div>
-            </div>
+            <TodoListUI
+                innerValue={this.state.innerValue}
+                list={this.state.list}
+                changeListValue={this.changeListValue}
+                changeInputValue={this.changeInputValue}
+                deleteListValue={this.deleteListValue}
+            />
          );
     }
+    componentDidMount() {
+        axios.get('http://rap2.taobao.org:38080/app/mock/258888/redux/demo01')
+            .then((res)=>{
+                const data = res.data
+                this.getList(data)
+            })
+            .catch((err) => { console.log('axios 获取数据失败' + err) })
+    }
+    getList(data) {
+        const action = getListAction(data)
+        store.dispatch(action)
+    }
+
     changeInputValue(e) {
-        const action = {
-            type: 'changeInputValue',
-            value: e.target.value
-        }
+        const action = chageInputAction(e.target.value)
         store.dispatch(action)
     }
     changeListValue() {
-        const action = {
-            type: 'changeListValue', 
-        }
+        const action = addLIstAction()
+        store.dispatch(action)
+    }
+    deleteListValue(index) {
+        const action = deleteListAction(index)
         store.dispatch(action)
     }
     storeChange() {
