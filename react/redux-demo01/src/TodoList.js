@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import axios from 'axios'
 import store from './store/index'
-import { chageInputAction, addLIstAction, deleteListAction, getListAction } from './store/actionCreators'
+import { chageInputAction, addLIstAction, deleteListAction, getListAction, getTodoList } from './store/actionCreators'
 import TodoListUI from './TodoListUI'
 
 
@@ -29,12 +29,15 @@ class TodoList extends Component {
          );
     }
     componentDidMount() {
-        axios.get('http://rap2.taobao.org:38080/app/mock/258888/redux/demo01')
-            .then((res)=>{
-                const data = res.data
-                this.getList(data)
-            })
-            .catch((err) => { console.log('axios 获取数据失败' + err) })
+        // axios.get('http://rap2.taobao.org:38080/app/mock/258888/redux/demo01')
+        //     .then((res)=>{
+        //         const data = res.data
+        //         this.getList(data)
+        //     })
+        //     .catch((err) => { console.log('axios 获取数据失败' + err) })
+        const action = getTodoList();
+        console.log(action)
+        store.dispatch(action)
     }
     getList(data) {
         const action = getListAction(data)
