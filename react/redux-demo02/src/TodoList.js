@@ -1,30 +1,43 @@
 import React, { Component } from 'react';
-import store from './store'
+
 import {connect} from 'react-redux'
 
-class TodoList extends Component {
-    constructor(props){
-        super(props)
-        this.state = store.getState()
-    }
-    render() { 
-        return (
+const TodoList = (props)=>{
+    let { inputValue, inputChange, clickButton, list } = props;
+    return (
+        <div>
             <div>
-                <div>
-                    <input value={this.props.inputValue} onChange={this.props.inputChange} />
-                    <button onClick={this.props.clickButton}>提交</button>
-                </div>
-                <ul>
-                    {
-                        this.props.list.map((item,index)=>{
-                        return (<li key={index}>{item}</li>)
-                        })
-                    }
-                </ul>
+                <input value={inputValue} onChange={inputChange} />
+                <button onClick={clickButton}>提交</button>
             </div>
-            );
-    }
+            <ul>
+                {
+                    list.map((item,index)=>{
+                    return (<li key={index}>{item}</li>)
+                    })
+                }
+            </ul>
+        </div>
+        );
 }
+//     render() { 
+//         return (
+//             <div>
+//                 <div>
+//                     <input value={inputValue} onChange={inputChange} />
+//                     <button onClick={clickButton}>提交</button>
+//                 </div>
+//                 <ul>
+//                     {
+//                         list.map((item,index)=>{
+//                         return (<li key={index}>{item}</li>)
+//                         })
+//                     }
+//                 </ul>
+//             </div>
+//             );
+//     }
+// }
 const stateToProps = (state)=>{
     return {
         inputValue : state.inputValue,
