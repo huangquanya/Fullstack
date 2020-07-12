@@ -10,14 +10,15 @@ class Index extends Component {
                 {cid:456,title:'技术胖的个人博客-2'},
                 {cid:789,title:'技术胖的个人博客-3'},
             ]
-        }
+        };
+        this.props.history.push('/home/')
     }
     render() { 
 
         return ( 
             
             <ul>
-                <Redirect to="/home/" />
+                {/* <Redirect to="/home/" /> */}
                 {
                     this.state.list.map((item,index)=>{
                         return (
