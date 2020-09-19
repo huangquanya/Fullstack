@@ -1,10 +1,11 @@
 import React from 'react'
-function Player(props) {
+
+function Singer(props) {
     return(
         <div>
-            Player
+            Singer
         </div>
     )
 }
 
-export default Player
+export default Singer

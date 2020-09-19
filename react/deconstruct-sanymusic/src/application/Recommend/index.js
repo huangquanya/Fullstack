@@ -1,10 +1,11 @@
 import React from 'react'
-function Player(props) {
+
+function Recommend(props) {
     return(
         <div>
-            Player
+            Recommend
         </div>
     )
 }
 
-export default Player
+export default Recommend

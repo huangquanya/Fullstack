@@ -1,10 +1,11 @@
 import React from 'react'
-function Player(props) {
+
+function Rank(props) {
     return(
         <div>
-            Player
+            Rank
         </div>
     )
 }
 
-export default Player
+export default Rank
