@@ -8,4 +8,4 @@ function Singer(props) {
     )
 }
 
-export default Singer
+export default React.memo(Singer)
