@@ -1,91 +1,91 @@
-import React, { forwardRef, useState,useEffect, useRef, useImperativeHandle } from "react"
+import React, { forwardRef, useState, useEffect, useRef, useImperativeHandle } from "react"
 import PropTypes from "prop-types"
 import BScroll from "better-scroll"
-import styled from'styled-components';
+import styled from 'styled-components';
 
 const ScrollContainer = styled.div`
   width: 100%;
   height: 100%;
   overflow: hidden;
 `
-const Scroll = forwardRef ((props, ref) => {
-  const [bScroll, setBScroll] = useState ();
+const Scroll = forwardRef((props, ref) => {
+  const [bScroll, setBScroll] = useState();
 
-  const scrollContaninerRef = useRef ();
+  const scrollContaninerRef = useRef();
 
-  const { direction, click, refresh,  bounceTop, bounceBottom } = props;
+  const { direction, click, refresh, bounceTop, bounceBottom } = props;
 
   const { pullUp, pullDown, onScroll } = props;
 
-  useEffect (() => {
-    const scroll = new BScroll (scrollContaninerRef.current, {
+  useEffect(() => {
+    const scroll = new BScroll(scrollContaninerRef.current, {
       scrollX: direction === "horizental",
       scrollY: direction === "vertical",
       probeType: 3,
       click: click,
-      bounce:{
+      bounce: {
         top: bounceTop,
         bottom: bounceBottom
       }
     });
-    setBScroll (scroll);
+    setBScroll(scroll);
     return () => {
-      setBScroll (null);
+      setBScroll(null);
     }
     //eslint-disable-next-line
   }, []);
 
-  useEffect (() => {
+  useEffect(() => {
     if (!bScroll || !onScroll) return;
-    bScroll.on ('scroll', (scroll) => {
-      onScroll (scroll);
+    bScroll.on('scroll', (scroll) => {
+      onScroll(scroll);
     })
     return () => {
-      bScroll.off ('scroll');
+      bScroll.off('scroll');
     }
   }, [onScroll, bScroll]);
 
-  useEffect (() => {
+  useEffect(() => {
     if (!bScroll || !pullUp) return;
-    bScroll.on ('scrollEnd', () => {
+    bScroll.on('scrollEnd', () => {
       // 判断是否滑动到了底部
-      if (bScroll.y <= bScroll.maxScrollY + 100){
-        pullUp ();
+      if (bScroll.y <= bScroll.maxScrollY + 100) {
+        pullUp();
       }
     });
     return () => {
-      bScroll.off ('scrollEnd');
+      bScroll.off('scrollEnd');
     }
   }, [pullUp, bScroll]);
 
-  useEffect (() => {
+  useEffect(() => {
     if (!bScroll || !pullDown) return;
-    bScroll.on ('touchEnd', (pos) => {
+    bScroll.on('touchEnd', (pos) => {
       // 判断用户的下拉动作
       if (pos.y > 50) {
-        pullDown ();
+        pullDown();
       }
     });
     return () => {
-      bScroll.off ('touchEnd');
+      bScroll.off('touchEnd');
     }
   }, [pullDown, bScroll]);
 
 
-  useEffect (() => {
-    if (refresh && bScroll){
-      bScroll.refresh ();
+  useEffect(() => {
+    if (refresh && bScroll) {
+      bScroll.refresh();
     }
   });
 
-  useImperativeHandle (ref, () => ({
-    refresh () {
+  useImperativeHandle(ref, () => ({
+    refresh() {
       if (bScroll) {
-        bScroll.refresh ();
-        bScroll.scrollTo (0, 0);
+        bScroll.refresh();
+        bScroll.scrollTo(0, 0);
       }
     },
-    getBScroll () {
+    getBScroll() {
       if (bScroll) {
         return bScroll;
       }
@@ -104,7 +104,7 @@ Scroll.defaultProps = {
   direction: "vertical",
   click: true,
   refresh: true,
-  onScroll:null,
+  onScroll: null,
   pullUpLoading: false,
   pullDownLoading: false,
   pullUp: null,
@@ -114,7 +114,7 @@ Scroll.defaultProps = {
 };
 
 Scroll.propTypes = {
-  direction: PropTypes.oneOf (['vertical', 'horizental']),
+  direction: PropTypes.oneOf(['vertical', 'horizental']),
   refresh: PropTypes.bool,
   onScroll: PropTypes.func,
   pullUp: PropTypes.func,
