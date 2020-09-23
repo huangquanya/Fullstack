@@ -19,7 +19,8 @@ export {
 };
 
 
-export const categoryTypes = [{
+export const categoryTypes = [
+  {
   name: "华语男",
   key: "1001"
 },

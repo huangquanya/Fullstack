@@ -9,9 +9,11 @@ export const getRecommendListRequest = () => {
 }
 
 export const getHotSingerListRequest = (count) => {
+  console.log(`/top/artists?offset=${count}`)
   return axiosInstance.get(`/top/artists?offset=${count}`);
 }
 
 export const getSingerListRequest= (category, alpha, count) => {
+  console.log(`/artist/list?cat=${category}&initial=${alpha.toLowerCase()}&offset=${count}`)
   return axiosInstance.get(`/artist/list?cat=${category}&initial=${alpha.toLowerCase()}&offset=${count}`);
 }

@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback , useEffect } from 'react';
 import Horizen from '../../baseUI/horizen-item';
 import Scroll from '../../baseUI/scroll'
+import LazyLoad, { forceCheck } from 'react-lazyload'
 import { categoryTypes, alphaTypes } from '../../api/config';
 import { NavContainer, ListContainer, ListItem, List } from "./style";
 import {
@@ -8,48 +9,67 @@ import {
     getHotSingerList,
     changeEnterLoading,
     changePageCount,
-    refreshMoreSingerList,
     changePullUpLoading,
     changePullDownLoading,
+    refreshMoreSingerList,
     refreshMoreHotSingerList
 } from './store/actionCreators';
 import { connect } from 'react-redux';
+import Loading from '../../baseUI/loading';
 
 //mock 数据
-const singerList = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map(item => {
-    return {
-        picUrl: "https://p2.music.126.net/uTwOm8AEFFX_BYHvfvFcmQ==/109951164232057952.jpg",
-        name: "隔壁老樊",
-        accountId: 277313426,
-    }
-});
+// const singerList = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map(item => {
+//     return {
+//         picUrl: "https://p2.music.126.net/uTwOm8AEFFX_BYHvfvFcmQ==/109951164232057952.jpg",
+//         name: "隔壁老樊",
+//         accountId: 277313426,
+//     }
+// });
 
 function Singers(props) {
     let [category, setCategory] = useState('');
     let [alpha, setAlpha] = useState('');
 
-    const {singerList,enterLoading,pullUpLoading,pullDownLoading,pageCount} = props
-    const {updateDispatch} = props
+    const { singerList, enterLoading, pullUpLoading, pullDownLoading, pageCount } = props
+    const { getHotSingerDispatch, updateDispatch, pullUpRefreshDispatch, pullDownRefreshDispatch } = props
 
-    let handleUpdateAlpha = (val) => {
+
+    useEffect(() => {
+        getHotSingerDispatch();
+        // eslint-disable-next-line
+    }, []);
+
+    let handleUpdateAlpha = useCallback((val) => {
         setAlpha(val);
         updateDispatch(category, val);
-      };
-      
-      let handleUpdateCatetory = (val) => {
+    },[alpha]);
+
+    let handleUpdateCatetory = useCallback((val) => {
         setCategory(val);
         updateDispatch(val, alpha);
-      };
+    },[category]);
+
+    const handlePullUp = useCallback(() => {
+        pullUpRefreshDispatch(category, alpha, category === '', pageCount);
+    },[category, alpha , pageCount]);
+
+    const handlePullDown = useCallback(() => {
+        pullDownRefreshDispatch(category, alpha);
+    },[category, alpha]);
+
 
     const renderSingerList = () => {
+        const list = singerList ? singerList.toJS() : []
         return (
             <List>
                 {
-                    singerList.map((item, index) => {
+                    list.map((item, index) => {
                         return (
                             <ListItem key={item.accountId + "" + index}>
                                 <div className="img_wrapper">
-                                    <img src={`${item.picUrl}?param=300x300`} width="100%" height="100%" alt="music" />
+                                    <LazyLoad placeholder={<img width="100%" height="100%" src={require('./singer.png')} alt="music" />} height={30}>
+                                        <img src={`${item.picUrl}?param=300x300`} width="100%" height="100%" alt="music" />
+                                    </LazyLoad>
                                 </div>
                                 <span className="name">{item.name}</span>
                             </ListItem>
@@ -75,7 +95,15 @@ function Singers(props) {
                     oldVal={alpha}></Horizen>
             </NavContainer>
             <ListContainer>
-                <Scroll>
+                <Loading show={enterLoading}></Loading>
+                {console.log(enterLoading)}
+                <Scroll
+                    pullUp={handlePullUp}
+                    pullDown={handlePullDown}
+                    pullUpLoading={pullUpLoading}
+                    pullDownLoading={pullDownLoading}
+                    onScroll={forceCheck}
+                >
                     {renderSingerList()}
                 </Scroll>
             </ListContainer>
@@ -91,12 +119,14 @@ const mapStateToProps = (state) => ({
 });
 const mapDispatchToProps = (dispatch) => {
     return {
+        // 第一次加载
         getHotSingerDispatch() {
             dispatch(getHotSingerList());
         },
+        // 更新cat和alpha
         updateDispatch(category, alpha) {
             dispatch(changePageCount(0));//由于改变了分类，所以pageCount清零
-            dispatch(changeEnterLoading(true));//loading，现在实现控制逻辑，效果实现放到下一节，后面的loading同理
+            dispatch(changeEnterLoading(true));//loading，现在实现控制逻辑
             dispatch(getSingerList(category, alpha));
         },
         // 滑到最底部刷新部分的处理
