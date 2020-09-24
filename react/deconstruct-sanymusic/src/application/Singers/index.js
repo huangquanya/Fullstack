@@ -1,4 +1,4 @@
-import React, { useState, useCallback , useEffect } from 'react';
+import React, { useState, useCallback, useEffect,useContext } from 'react';
 import Horizen from '../../baseUI/horizen-item';
 import Scroll from '../../baseUI/scroll'
 import LazyLoad, { forceCheck } from 'react-lazyload'
@@ -16,6 +16,7 @@ import {
 } from './store/actionCreators';
 import { connect } from 'react-redux';
 import Loading from '../../baseUI/loading';
+import {CHANGE_ALPHA,CHANGE_CATEGORY,CategoryDataContext} from './data'
 
 //mock 数据
 // const singerList = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map(item => {
@@ -27,35 +28,50 @@ import Loading from '../../baseUI/loading';
 // });
 
 function Singers(props) {
-    let [category, setCategory] = useState('');
-    let [alpha, setAlpha] = useState('');
+    // let [category, setCategory] = useState('');
+    // let [alpha, setAlpha] = useState('');
+    const { data, dispatch } = useContext(CategoryDataContext);
+    // 拿到 category 和 alpha 的值
+    const { category, alpha } = data.toJS();
 
     const { singerList, enterLoading, pullUpLoading, pullDownLoading, pageCount } = props
     const { getHotSingerDispatch, updateDispatch, pullUpRefreshDispatch, pullDownRefreshDispatch } = props
 
 
     useEffect(() => {
-        getHotSingerDispatch();
+        if (!singerList.size) {
+            getHotSingerDispatch ();
+          }
         // eslint-disable-next-line
     }, []);
 
-    let handleUpdateAlpha = useCallback((val) => {
-        setAlpha(val);
-        updateDispatch(category, val);
-    },[alpha]);
+    // let handleUpdateAlpha = useCallback((val) => {
+    //     setAlpha(val);
+    //     updateDispatch(category, val);
+    // }, [alpha]);
 
-    let handleUpdateCatetory = useCallback((val) => {
-        setCategory(val);
+    // let handleUpdateCatetory = useCallback((val) => {
+    //     setCategory(val);
+    //     updateDispatch(val, alpha);
+    // }, [category]);
+    //CHANGE_ALPHA 和 CHANGE_CATEGORY 变量需要从 data.js 中引入
+    let handleUpdateAlpha = (val) => {
+        dispatch({ type: CHANGE_ALPHA, data: val });
+        updateDispatch(category, val);
+    };
+
+    let handleUpdateCatetory = (val) => {
+        dispatch({ type: CHANGE_CATEGORY, data: val });
         updateDispatch(val, alpha);
-    },[category]);
+    };
 
     const handlePullUp = useCallback(() => {
         pullUpRefreshDispatch(category, alpha, category === '', pageCount);
-    },[category, alpha , pageCount]);
+    }, [category, alpha, pageCount]);
 
     const handlePullDown = useCallback(() => {
         pullDownRefreshDispatch(category, alpha);
-    },[category, alpha]);
+    }, [category, alpha]);
 
 
     const renderSingerList = () => {
