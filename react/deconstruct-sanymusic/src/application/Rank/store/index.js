@@ -1,4 +1,4 @@
-import {reducer} from './reducer'
+import reducer from './reducer'
 import {getRankList} from './actionCreators'
 import * as actionCreators from './constants'
 
