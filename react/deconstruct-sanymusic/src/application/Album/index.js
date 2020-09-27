@@ -96,20 +96,28 @@ import Loading from '../../baseUI/loading/index';
 
 function Album(props) {
     const [showStatus, setShowStatus] = useState(true);
-
     const [title, setTitle] = useState("歌单");
     const [isMarquee, setIsMarquee] = useState(false);// 是否跑马灯
     const headerEl = useRef();
+    const id = props.match.params.id;
 
-    const {enterLoading,currentAlbum} = props
+    const {getAlbumDataDispatch} = props
+    const {enterLoading,currentAlbum:currentAlbumImmutable} = props
 
-    const handleBack = () => {
+    useEffect(() => {
+        getAlbumDataDispatch(id)
+    }, [getAlbumDataDispatch,id])
+
+   
+    let currentAlbum = currentAlbumImmutable.toJS();
+
+    const handleBack = useCallback(() => {
         setShowStatus(false);
-    };
+    },[]);
 
 
 
-    const handleScroll = (pos) => {
+    const handleScroll = useCallback((pos) => {
         let minScrollY = -HEADER_HEIGHT;
         let percent = Math.abs(pos.y / minScrollY);
         let headerDom = headerEl.current;
@@ -125,25 +133,11 @@ function Album(props) {
             setTitle("歌单");
             setIsMarquee(false);
         }
-    };
+    },[currentAlbum]);
 
-    return (
-        <CSSTransition
-            in={showStatus}
-            timeout={500}
-            classNames="fly"
-            appear={true}
-            unmountOnExit
-            onExited={props.history.goBack}
-        >
-            <Container>
-                <Header ref={headerEl} title={title} handleClick={handleBack} isMarquee={isMarquee} ></Header>
-                {
-                    !isEmptyObject (currentAlbum) ? (
-                    
-                <Scroll bounceTop={false} onScroll={handleScroll}>
-                    <div>
-                        <TopDesc background={currentAlbum.coverImgUrl}>
+    const renderTopDesc = ()=>{
+        return(
+            <TopDesc background={currentAlbum.coverImgUrl}>
                             <div className="background">
                                 <div className="filter"></div>
                             </div>
@@ -165,7 +159,12 @@ function Album(props) {
                                 </div>
                             </div>
                         </TopDesc>
-                        <Menu>
+        )
+    }
+
+    const renderMenu = () =>{
+        return(
+            <Menu>
                             <div>
                                 <i className="iconfont">&#xe6ad;</i>
                                 评论
@@ -183,7 +182,11 @@ function Album(props) {
                                 更多
                             </div>
                         </Menu>
-                        <SongList>
+        )
+    }
+
+    const renderSongList = () =>(
+        <SongList>
                             <div className="first_line">
                                 <div className="play_all">
                                     <i className="iconfont">&#xe6e3;</i>
@@ -212,6 +215,28 @@ function Album(props) {
                                 }
                             </SongItem>
                         </SongList>
+    )
+
+
+    return (
+        <CSSTransition
+            in={showStatus}
+            timeout={500}
+            classNames="fly"
+            appear={true}
+            unmountOnExit
+            onExited={props.history.goBack}
+        >
+            <Container>
+                <Header ref={headerEl} title={title} handleClick={handleBack} isMarquee={isMarquee} ></Header>
+                {
+                    !isEmptyObject (currentAlbum) ? (
+                    
+                <Scroll bounceTop={false} onScroll={handleScroll}>
+                    <div>
+                        {renderTopDesc()}
+                        {renderMenu()}
+                        {renderSongList()}
                     </div>
                 </Scroll>) : null
                 }
@@ -238,4 +263,4 @@ const mapDispatchToProps = (dispatch) => {
 
 
 
-export default connect((mapStateToProps, mapDispatchToProps))(React.memo(Album));
+export default connect(mapStateToProps, mapDispatchToProps)(React.memo(Album));

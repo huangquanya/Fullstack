@@ -17,6 +17,7 @@ import {
 import { connect } from 'react-redux';
 import Loading from '../../baseUI/loading';
 import {CHANGE_ALPHA,CHANGE_CATEGORY,CategoryDataContext} from './data'
+import {renderRoutes} from 'react-router-config'
 
 //mock 数据
 // const singerList = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map(item => {
@@ -33,7 +34,6 @@ function Singers(props) {
     const { data, dispatch } = useContext(CategoryDataContext);
     // 拿到 category 和 alpha 的值
     const { category, alpha } = data.toJS();
-
     const { singerList, enterLoading, pullUpLoading, pullDownLoading, pageCount } = props
     const { getHotSingerDispatch, updateDispatch, pullUpRefreshDispatch, pullDownRefreshDispatch } = props
 
@@ -73,6 +73,9 @@ function Singers(props) {
         pullDownRefreshDispatch(category, alpha);
     }, [category, alpha]);
 
+    const enterDetail = (id) => {
+        props.history.push (`/singers/${id}`);
+      };
 
     const renderSingerList = () => {
         const list = singerList ? singerList.toJS() : []
@@ -81,7 +84,7 @@ function Singers(props) {
                 {
                     list.map((item, index) => {
                         return (
-                            <ListItem key={item.accountId + "" + index}>
+                            <ListItem key={item.accountId + "" + index} onClick={()=>{enterDetail(item.id)}}>
                                 <div className="img_wrapper">
                                     <LazyLoad placeholder={<img width="100%" height="100%" src={require('./singer.png')} alt="music" />} height={30}>
                                         <img src={`${item.picUrl}?param=300x300`} width="100%" height="100%" alt="music" />
@@ -112,7 +115,7 @@ function Singers(props) {
             </NavContainer>
             <ListContainer>
                 <Loading show={enterLoading}></Loading>
-                {console.log(enterLoading)}
+                {/* {console.log(enterLoading)} */}
                 <Scroll
                     pullUp={handlePullUp}
                     pullDown={handlePullDown}
@@ -123,6 +126,7 @@ function Singers(props) {
                     {renderSingerList()}
                 </Scroll>
             </ListContainer>
+            { renderRoutes(props.route.routes) }
         </div>
     )
 }

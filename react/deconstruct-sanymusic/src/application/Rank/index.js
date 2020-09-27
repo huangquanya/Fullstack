@@ -32,8 +32,11 @@ function Rank(props) {
       <List globalRank={global}>
         {
           list.map((item) => {
+            // if(item.coverImgId===109951164432303700){
+            //   console.log(item)
+            // }id出现重名，调试
             return (
-              <ListItem key={item.coverImgId} tracks={item.tracks} onClick={() => enterDetail(item.name)}>
+              <ListItem key={item.coverImgId_str} tracks={item.tracks} onClick={() => enterDetail(item)}>
                 <div className="img_wrapper">
                   <img src={item.coverImgUrl} alt="" />
                   <div className="decorate"></div>
@@ -48,12 +51,8 @@ function Rank(props) {
     )
   }
 
-  const enterDetail = (name) => {
-    const idx = filterIndex(name);
-    if(idx === null) {
-      alert("暂无相关数据");
-      return;
-    } 
+  const enterDetail = (detail) => {
+    props.history.push (`/rank/${detail.id}`)
   }
 
   const renderSongList = (list) => {
