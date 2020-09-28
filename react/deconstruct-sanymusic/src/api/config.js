@@ -1,10 +1,10 @@
 import axios from 'axios';
 
 export const baseUrl = 'http://neteasecloudmusicapi.zhaoboy.com';
-
+export const prod_base_url = '/api'
 //axios 的实例及拦截器配置
 const axiosInstance = axios.create ({
-  baseURL: baseUrl
+  baseURL: prod_base_url
 });
 
 axiosInstance.interceptors.response.use (
