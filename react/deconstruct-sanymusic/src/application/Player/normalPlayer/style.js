@@ -32,6 +32,39 @@ export const NormalPlayerContainer = styled.div`
       filter: none;
     }
   }
+  &.mini-enter {
+    transform: translate3d(0, 100%, 0);
+  }
+  &.mini-enter-active {
+    transform: translate3d(0, 0, 0);
+    transition: all 0.4s;
+  }
+  &.mini-exit-active {
+    transform: translate3d(0, 100%, 0);
+    transition: all .4s
+  }
+  &.normal-enter,
+  &.normal-exit-done {
+  .top {
+    transform: translate3d(0, -100px, 0);
+  }
+  .bottom {
+    transform: translate3d(0, 100px, 0);
+  }
+}
+  &.normal-enter-active,
+  &.normal-exit-active {
+    .top,
+    .bottom {
+      transform: translate3d(0, 0, 0);
+      transition: all 0.4s cubic-bezier(0.86, 0.18, 0.82, 1.32);
+    }
+    opacity: 1;
+    transition: all 0.4s;
+  }
+  &.normal-exit-active {
+    opacity: 0;
+  }
 `;
 export const Top = styled.div`
   position: relative;
@@ -130,7 +163,7 @@ export const ProgressWrapper = styled.div`
   .time {
     color: ${style["font-color-desc"]};
     font-size: ${style["font-size-s"]};
-    flex: 0 0 30px;
+    flex: 0 0 45px;
     line-height: 30px;
     width: 30px;
     &.time-l {
@@ -176,3 +209,4 @@ export const Operators = styled.div`
     color: ${style["theme-color"]};
   }
 `;
+
