@@ -10,20 +10,21 @@ import {
     ProgressWrapper
 } from "./style";
 import animations from "create-keyframe-animation";
-import { prefixStyle,formatPlayTime } from "../../../api/utils";
+import { prefixStyle, formatPlayTime } from "../../../api/utils";
+import { playMode } from '../../../api/config';
 import { CSSTransition } from 'react-transition-group';
-import ProgressBar from '../../../baseUI/progressBar/index'
-
+import ProgressBar from '../../../baseUI/progressBar/index';
 
 
 function NormalPlayer(props) {
-    const { song, fullScreen, playing, percent, duration, currentTime } =  props;
-const { toggleFullScreen, clickPlaying, onProgressChange } = props;
+    const { song, fullScreen, playing, percent, duration, currentTime, mode } = props;
+    const { toggleFullScreen, clickPlaying, onProgressChange, handlePrev, handleNext, changeMode } = props;
 
 
-    const transform = prefixStyle("transform");
     const normalPlayerRef = useRef();
-    const cdWrapperRef = useRef();
+    const cdWrapperRef = useRef(); 
+    const transform = prefixStyle("transform");
+
 
     // 计算偏移的辅助函数
     const _getPosAndScale = () => {
@@ -99,6 +100,20 @@ const { toggleFullScreen, clickPlaying, onProgressChange } = props;
         toggleFullScreen(false)
     }
 
+    //getPlayMode方法
+    const getPlayMode = () => {
+        let content;
+        if (mode === playMode.sequence) {
+            content = "&#xe625;";
+        } else if (mode === playMode.loop) {
+            content = "&#xe653;";
+        } else {
+            content = "&#xe61b;";
+        }
+        return content;
+    };
+
+
     return (
         <CSSTransition
             classNames="normal"
@@ -143,7 +158,7 @@ const { toggleFullScreen, clickPlaying, onProgressChange } = props;
                     <ProgressWrapper>
                         <span className="time time-l">{formatPlayTime(currentTime)}</span>
                         <div className="progress-bar-wrapper">
-                            <ProgressBar 
+                            <ProgressBar
                                 percent={percent}
                                 percentChange={onProgressChange}
                             ></ProgressBar>
@@ -151,10 +166,14 @@ const { toggleFullScreen, clickPlaying, onProgressChange } = props;
                         <div className="time time-r">{formatPlayTime(duration)}</div>
                     </ProgressWrapper>
                     <Operators>
-                        <div className="icon i-left" >
-                            <i className="iconfont">&#xe625;</i>
+                        {/* //Operator标签下 */}
+                        <div className="icon i-left" onClick={changeMode}>
+                            <i
+                                className="iconfont"
+                                dangerouslySetInnerHTML={{ __html: getPlayMode() }}
+                            ></i>
                         </div>
-                        <div className="icon i-left">
+                        <div className="icon i-left" onClick={handlePrev}>
                             <i className="iconfont">&#xe6e1;</i>
                         </div>
                         <div className="icon i-center">
@@ -166,7 +185,7 @@ const { toggleFullScreen, clickPlaying, onProgressChange } = props;
                                 }}
                             ></i>
                         </div>
-                        <div className="icon i-right">
+                        <div className="icon i-right" onClick={handleNext}>
                             <i className="iconfont">&#xe718;</i>
                         </div>
                         <div className="icon i-right">
