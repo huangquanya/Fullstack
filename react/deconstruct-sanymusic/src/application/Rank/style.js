@@ -39,13 +39,14 @@ export const ListItem = styled.li`
     height: ${props => props.tracks.length ? "27vw" : "32vw"};
     border-radius: 3px;
     position: relative;
+    flex-shrink: 0;
     .decorate {
       position: absolute;
       bottom: 0;
       width: 100%;
       height: 35px;
       border-radius: 3px;
-      background: linear-gradient (hsla (0,0%,100%,0),hsla (0,0%,43%,.4));
+      background: linear-gradient(hsla(0,0%,100%,0),hsla(0,0%,43%,.4));
     }
     img {
       width: 100%;
@@ -67,9 +68,15 @@ export const SongList = styled.ul`
   flex-direction: column;
   justify-content: space-around;
   padding: 10px 10px;
+  box-sizing:border-box;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
   >li {
     font-size: ${style["font-size-s"]};
     color: grey;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 `;
 

@@ -9,16 +9,16 @@ const SongsList = React.forwardRef((props, refs) => {
     const { collectCount, showCollect, songs } = props;
     const { changePlayListDispatch, changeCurrentIndexDispatch, changeSequecePlayListDispatch } = props;
     // 接受触发动画的函数
-// const { musicAnimation } = props;
+const { musicAnimation } = props;
 
     const totalCount = songs.length;
 
     const selectItem = (e, index) => {
-        console.log(e)
+        // console.log(e)
         changePlayListDispatch (songs);
         changeSequecePlayListDispatch (songs);
         changeCurrentIndexDispatch (index);
-        // musicAnimation (e.nativeEvent.clientX, e.nativeEvent.clientY);
+        musicAnimation(e.nativeEvent.clientX, e.nativeEvent.clientY);
       }
 
     let songList = (list) => {

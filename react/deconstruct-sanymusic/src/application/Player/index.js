@@ -14,13 +14,14 @@ import NormalPlayer from './normalPlayer';
 import { getSongUrl, isEmptyObject, shuffle, findIndex } from "../../api/utils";
 import { playMode } from '../../api/config';
 import Toast from "./../../baseUI/Toast";
+import PlayList from "./play-list"
 
 function Player(props) {
     const {
         fullScreen,
         playing,
         currentIndex,
-        playList:immutablePlayList,
+        playList: immutablePlayList,
         currentSong: immutableCurrentSong,
         mode,//播放模式
         sequencePlayList: immutableSequencePlayList,//顺序列表 
@@ -31,14 +32,18 @@ function Player(props) {
         changeCurrentDispatch,
         changePlayListDispatch,//改变playList
         changeModeDispatch,//改变mode
-        toggleFullScreenDispatch
+        toggleFullScreenDispatch,
+        togglePlayListDispatch
     } = props;
 
     const playList = immutablePlayList.toJS();
     const sequencePlayList = immutableSequencePlayList.toJS();
     const currentSong = immutableCurrentSong.toJS();
 
+    // 保存当前audio是否可以切歌
+    const songReady = useRef(true);
     const [modeText, setModeText] = useState("");
+    // 绑定切换播放和模式时文字显示的组件
     const toastRef = useRef();
     //记录当前的歌曲，以便于下次重渲染时比对是否是一首歌
     const [preSong, setPreSong] = useState({});
@@ -65,11 +70,14 @@ function Player(props) {
         )
             return;
         let current = playList[currentIndex];
-        changeCurrentDispatch(current);//赋值currentSong
         setPreSong(current);
+        songReady.current = false; // 把标志位置为 false, 表示现在新的资源没有缓冲完成，不能切歌
+        changeCurrentDispatch(current);//赋值currentSong
         audioRef.current.src = getSongUrl(current.id);
         setTimeout(() => {
-            audioRef.current.play();
+            audioRef.current.play().then(() => {
+                songReady.current = true;
+            },(err)=>{console.log(err)});
         });
         togglePlayingDispatch(true);//播放状态
         setCurrentTime(0);//从头开始播放
@@ -131,38 +139,44 @@ function Player(props) {
         if (!playing) togglePlayingDispatch(true);
         changeCurrentIndexDispatch(index);
     };
-    
+
     const changeMode = () => {
         let newMode = (mode + 1) % 3;
         if (newMode === 0) {
-          //顺序模式
-          changePlayListDispatch(sequencePlayList);
-          let index = findIndex(currentSong, sequencePlayList);
-          changeCurrentIndexDispatch(index);
-          setModeText("顺序循环");
+            //顺序模式
+            changePlayListDispatch(sequencePlayList);
+            let index = findIndex(currentSong, sequencePlayList);
+            changeCurrentIndexDispatch(index);
+            setModeText("顺序循环");
         } else if (newMode === 1) {
-          //单曲循环
-          changePlayListDispatch(sequencePlayList);
-          setModeText("单曲循环");
+            //单曲循环
+            changePlayListDispatch(sequencePlayList);
+            setModeText("单曲循环");
         } else if (newMode === 2) {
-          //随机播放
-          let newList = shuffle(sequencePlayList);
-          let index = findIndex(currentSong, newList);
-          changePlayListDispatch(newList);
-          changeCurrentIndexDispatch(index);
-          setModeText("随机播放");
+            //随机播放
+            let newList = shuffle(sequencePlayList);
+            let index = findIndex(currentSong, newList);
+            changePlayListDispatch(newList);
+            changeCurrentIndexDispatch(index);
+            setModeText("随机播放");
         }
         changeModeDispatch(newMode);
         toastRef.current.show();
-      };
+    };
 
-      const handleEnd = () =>{
+    const handleEnd = () => {
         if (mode === playMode.loop) {
             handleLoop();
-          } else {
+        } else {
             handleNext();
-          }
-      }
+        }
+    }
+
+    const handleError = () => {
+        songReady.current = true;
+        console.log("播放出错");
+    };
+
 
     return (
         <div>
@@ -174,6 +188,7 @@ function Player(props) {
                     toggleFullScreen={toggleFullScreenDispatch}
                     clickPlaying={clickPlaying}
                     percent={percent}
+                    togglePlayList={togglePlayListDispatch}
                 />}
             {isEmptyObject(currentSong) ? null :
                 <NormalPlayer
@@ -190,8 +205,10 @@ function Player(props) {
                     handleNext={handleNext}
                     mode={mode}
                     changeMode={changeMode}
+                    togglePlayList={togglePlayListDispatch}
                 />}
-            <audio ref={audioRef} onTimeUpdate={updateTime} onEnded={handleEnd}></audio>
+            <audio ref={audioRef} onTimeUpdate={updateTime} onEnded={handleEnd} onError={handleError}></audio>
+            <PlayList></PlayList>
             <Toast text={modeText} ref={toastRef}></Toast>
         </div>
     )

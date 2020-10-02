@@ -6,6 +6,7 @@ import Singers from '../application/Singers';
 import Rank from '../application/Rank';
 import Album from '../application/Album';
 import Singer from '../application/Singer';
+import Search from '../application/Search'
 
 export default [
   {
@@ -16,13 +17,13 @@ export default [
         path: "/",
         exact: true,
         render: () => (
-          <Redirect to={"/recommend"}/>
+          <Redirect to={"/recommend"} />
         )
       },
       {
         path: "/recommend",
         component: Recommend,
-        routes:[
+        routes: [
           {
             path: "/recommend/:id",
             component: Album
@@ -43,10 +44,16 @@ export default [
       {
         path: "/rank",
         component: Rank,
-        routes:[
+        routes: [
           {
-            path:"/rank/:id",
+            path: "/rank/:id",
             component: Album
+          },
+          {
+            path: "/search",
+            exact: true,
+            key: "search",
+            component: Search
           }
         ]
       },
