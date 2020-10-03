@@ -48,15 +48,15 @@ export default [
           {
             path: "/rank/:id",
             component: Album
-          },
-          {
-            path: "/search",
-            exact: true,
-            key: "search",
-            component: Search
           }
         ]
       },
+      {
+        path: "/search",
+        exact: true,
+        key: "search",
+        component: Search
+      }
     ]
   }
 ]
