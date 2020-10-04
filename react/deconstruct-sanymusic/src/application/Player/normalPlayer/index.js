@@ -179,7 +179,13 @@ function NormalPlayer(props) {
                         in={currentState.current !== "lyric"}
                     >
                         <CDWrapper style={{ visibility: currentState.current !== "lyric" ? "visible" : "hidden" }}>
-                            {/* // 其余跟以前保持一致 */}
+                            <div className="cd">
+                                <img
+                                    className={`image play ${playing ? "" : "pause"}`}
+                                    src={song.al.picUrl + "?param=400x400"}
+                                    alt=""
+                                />
+                            </div>
                             <p className="playing_lyric">{currentPlayingLyric}</p>
                         </CDWrapper>
                     </CSSTransition>

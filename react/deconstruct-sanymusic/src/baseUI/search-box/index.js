@@ -46,6 +46,12 @@ const SearchBox = (props) => {
   // 根据关键字是否存在决定清空按钮的显示 / 隐藏 
   const displayStyle = query ? { display: 'block' } : { display: 'none' };
 
+
+  // 缓存方法
+  let handleQueryDebounce = useMemo(() => {
+    return debounce(handleQuery, 500);
+  }, [handleQuery]);
+
   useEffect(() => {
     // 进场出现光标:
     queryRef.current.focus();
@@ -74,10 +80,7 @@ const SearchBox = (props) => {
     setQuery(e.currentTarget.value);
   };
 
-  // 缓存方法
-  let handleQueryDebounce = useMemo(() => {
-    return debounce(handleQuery, 500);
-  }, [handleQuery]);
+
 
 
   return (

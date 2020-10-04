@@ -207,7 +207,7 @@ function PlayList(props) {
                                 {
                                     playList.map((item, index) => {
                                         return (
-                                            <li className="item" key={item.id} onClick={() => { handleChangeCurrentIndex(index) }}>
+                                            <li className="item" key={item.id} onClick={() => handleChangeCurrentIndex(index)}>
                                                 {getCurrentIcon(item)}
                                                 <span className="text">{item.name} - {getName(item.ar)}</span>
                                                 <span className="like">
@@ -249,6 +249,7 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = (dispatch) => {
     return {
         togglePlayListDispatch(data) {
+            console.log('toggle')
             dispatch(changeShowPlayList(data));
         },
         // 修改当前歌曲在列表中的 index，也就是切歌
