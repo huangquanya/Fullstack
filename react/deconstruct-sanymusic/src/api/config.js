@@ -5,7 +5,7 @@ export const prod_base_url = '/api'
 export const proxy = '&proxy=http://localhost:3000'
 //axios 的实例及拦截器配置
 const axiosInstance = axios.create({
-  baseURL: baseUrl
+  baseURL: prod_base_url
 });
 
 axiosInstance.interceptors.response.use(
