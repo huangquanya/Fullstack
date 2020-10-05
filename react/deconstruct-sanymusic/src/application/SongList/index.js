@@ -27,7 +27,7 @@ const { musicAnimation } = props;
             let item = list[i];
             res.push(
                 <li key={item.id} onClick={(e) => selectItem(e, i)}>
-                    <span className="index">{i}</span>
+                    <span className="index">{i+1}</span>
                     <div className="info">
                         <span>{item.name}</span>
                         <span>

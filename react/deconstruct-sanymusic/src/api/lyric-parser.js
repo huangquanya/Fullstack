@@ -101,6 +101,10 @@ export default class Lyric {
             }
         }, delay)
     }
+    stop() {
+        this.state = STATE_PAUSE
+        clearTimeout(this.timer)
+      }
     seek(offset) {
         this.play(offset, true)
     }

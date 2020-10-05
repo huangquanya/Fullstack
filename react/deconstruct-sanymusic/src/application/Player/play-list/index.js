@@ -160,6 +160,8 @@ function PlayList(props) {
         // 这里设置阈值为 150px
         if (distance >= 150) {
           // 大于 150px 则关闭 PlayList
+          console.log('scrollfalse')
+          setDistance(0)//下滑距离重置为空，否则一旦一次拉到下面之后再次点击都会触发关闭当前弹窗
           togglePlayListDispatch (false);
         } else {
           // 否则反弹回去

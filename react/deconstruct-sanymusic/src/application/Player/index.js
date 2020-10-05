@@ -86,7 +86,7 @@ function Player(props) {
             audioRef.current.play().then(() => {
                 songReady.current = true;
             }, (err) => { console.log(err) });
-        });
+        }, 300);
         togglePlayingDispatch(true);//播放状态
         getLyric(current.id);
         setCurrentTime(0);//从头开始播放
@@ -103,8 +103,8 @@ function Player(props) {
         togglePlayingDispatch(state);
         // console.log('play')
         if (currentLyric.current) {
-            currentLyric.current.togglePlay (currentTime*1000);
-          }
+            currentLyric.current.togglePlay(currentTime * 1000);
+        }
     };
 
     const updateTime = e => {
@@ -120,8 +120,8 @@ function Player(props) {
             togglePlayingDispatch(true);
         }
         if (currentLyric.current) {
-            currentLyric.current.seek (newTime * 1000);
-          }
+            currentLyric.current.seek(newTime * 1000);
+        }
     };
 
     //一首歌循环
@@ -201,9 +201,13 @@ function Player(props) {
     const getLyric = id => {
         let lyric = "";
         if (currentLyric.current) {
+            console.log(currentLyric.current)
             currentLyric.current.stop();
         }
         // 避免 songReady 恒为 false 的情况
+        setTimeout(() => {
+            songReady.current = true;
+        }, 3000);
         getLyricRequest(id)
             .then(data => {
                 lyric = data.lrc.lyric;
@@ -217,6 +221,7 @@ function Player(props) {
                 currentLyric.current.seek(0);
             })
             .catch(() => {
+                console.log('catch')
                 songReady.current = true;
                 audioRef.current.play();
             });

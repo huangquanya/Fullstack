@@ -1,7 +1,8 @@
 import axios from 'axios';
 
-export const baseUrl = 'http://neteasecloudmusicapi.zhaoboy.com';
+export const baseUrl = 'http://localhost:3000';
 export const prod_base_url = '/api'
+export const proxy = '&proxy=http://localhost:3000'
 //axios 的实例及拦截器配置
 const axiosInstance = axios.create({
   baseURL: baseUrl
