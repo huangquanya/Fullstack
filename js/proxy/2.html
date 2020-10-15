@@ -1,0 +1,37 @@
+<script>
+    let NOOP = ()=>{}
+    function toSafeObject(obj){
+        let handle = {
+            get(target,k){
+                if(target.hasOwnProperty(k)){
+                    return target[k]
+                }else{
+                    return new Proxy(NOOP,handle)
+                }
+            },
+            apply(target, thisObj, args){
+                if(target==NOOP){
+                    return target.apply(thisObj,args)
+                }else{
+                    return undefined
+                }
+            }
+        }
+        function deepProxy(o){
+            Object.keys(o).forEach(k =>{
+                if(typeof o[k]==='object' || typeof o[k]==='function') {
+                    o[k] = deepProxy(o[k])
+                }
+            })
+            return new Proxy(o,handle)
+        }
+        return deepProxy(obj)
+    }
+    let obj = {
+        a:3,
+        d:()=>5
+    }
+    let nObj= toSafeObject(obj)
+    // nObj.f => 代理对象
+    console.log(nObj.a.b.c.e)
+</script>
